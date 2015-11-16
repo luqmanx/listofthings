@@ -1,0 +1,6 @@
+{
+    "require": {
+        "rosengate/exedra": "dev-master",
+        "usmanhalalit/pixie": "1.*@dev"
+    }
+}
