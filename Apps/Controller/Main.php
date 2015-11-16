@@ -64,9 +64,17 @@ class Main
         }
         else
         {
-        $newuser = $insertdata->register($data);
+        $newuserid = $insertdata->register($data);
+        $getuser = $this->query->load('User');
+        $user = $getuser->getuser($newuserid);
+
+        foreach ($user as $user) 
+        {
+        	$this->exe->session->set('user.userid', $user->user_id);
+        }
         
         return $this->exe->redirect->to('@admin.default',['controller'=>'dashboard','action'=>'maininterface']);
+
     	}
 
 	}
@@ -110,7 +118,14 @@ class Main
 		}
 		else
 		{
-        $signupdata->register($data);
+        $newuserid = $signupdata->register($data);
+        $getuser = $this->query->load('User');
+        $user = $getuser->getuser($newuserid);
+
+        foreach ($user as $user) 
+        {
+        	$this->exe->session->set('user.userid', $user->user_id);
+        }
 		return $this->exe->redirect->to('@admin.default',['controller'=>'dashboard','action'=>'maininterface']);
 	    }
 
