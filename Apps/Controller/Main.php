@@ -11,8 +11,8 @@ class Main
 		$this->exe = $exe;
 		$this->view = $this->exe->view;
 
-		$this->exe->url->setBase('http://localhost/will-list');
-        $this->exe->url->setAsset('http://localhost/will-list/assets');
+		$this->exe->url->setBase('');
+        $this->exe->url->setAsset('');
 
         $this->query = new \Apps\Model\QB();
 
@@ -38,7 +38,7 @@ class Main
 
 		$username = $this->exe->request->post('username');
 		$email = $this->exe->request->post('email');
-		$password = $this->exe->request->post('password');
+		$password = md5($this->exe->request->post('password'));
 
 		$data = array(
 			'username' => $username,
@@ -68,12 +68,11 @@ class Main
         $getuser = $this->query->load('User');
         $user = $getuser->getuser($newuserid);
 
-        foreach ($user as $user) 
+        if($user)
         {
         	$this->exe->session->set('user.userid', $user->user_id);
+        	return $this->exe->redirect->to('@admin.default',['controller'=>'dashboard','action'=>'maininterface']);
         }
-        
-        return $this->exe->redirect->to('@admin.default',['controller'=>'dashboard','action'=>'maininterface']);
 
     	}
 
@@ -95,7 +94,7 @@ class Main
 
 		$username = $this->exe->request->post('username_signup');
 		$email = $this->exe->request->post('email_signup');
-		$password = $this->exe->request->post('password_signup');
+		$password = md5($this->exe->request->post('password_signup'));
 
 		$data = array(
 			'username' => $username,
@@ -122,11 +121,12 @@ class Main
         $getuser = $this->query->load('User');
         $user = $getuser->getuser($newuserid);
 
-        foreach ($user as $user) 
+        if($user)
         {
         	$this->exe->session->set('user.userid', $user->user_id);
+        	return $this->exe->redirect->to('@admin.default',['controller'=>'dashboard','action'=>'maininterface']);
         }
-		return $this->exe->redirect->to('@admin.default',['controller'=>'dashboard','action'=>'maininterface']);
+
 	    }
 
 	}
@@ -146,7 +146,7 @@ class Main
 	public function loginprocess()
 	{
 		$login_name = $this->exe->request->post('login_name');
-		$login_password = $this->exe->request->post('login_password');
+		$login_password = md5($this->exe->request->post('login_password'));
 
 		$data = array(
 			'login_name' => $login_name,
@@ -169,7 +169,7 @@ class Main
 
 				$this->exe->flash->set('error_login', 'Username and password is not match. Please enter correct username and password');	
 				$this->exe->flash->set('login_username' , $login_name);	
-				$this->exe->flash->set('login_password' , $login_password);
+				$this->exe->flash->set('login_password' , $this->exe->request->post('login_password'));
 				return $this->exe->redirect->to('login');
 		
 		}

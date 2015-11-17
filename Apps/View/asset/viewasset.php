@@ -48,6 +48,17 @@
 							<?php endforeach;?>
 						<?php endif;?>
 
+						<?php if(!$viewasset):?>
+						<tr>
+
+							<td></td>
+							<td>No Data For Asset Found</td>
+							<td></td>
+							<td></td>
+
+						</tr>
+						<?php endif;?>
+
 				</table>
 					
 				<nav>
@@ -55,7 +66,7 @@
 						<ul class="nav navbar-nav navbar-right">
 							<li>
 								<a href="<?php echo $exe->url->create('default',['controller' => 'asset','action'=>'mainasset']);?>">
-									<span class="glyphicon glyphicon-pencil"></span>Add more data
+									<span class="glyphicon glyphicon-pencil"></span>Add asset
 								</a>
 							</li>
 						</ul>
