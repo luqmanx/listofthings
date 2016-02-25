@@ -1,103 +1,87 @@
-<?php
-
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="<?php echo $assetUrl;?>/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="<?php echo $assetUrl;?>/css/bootstrap-theme.min.css">
-
 		<style type="text/css">
-			h2
-			{
-				text-align: center;
-			}
-			.jumbotron
-			{
-				margin-top: 30px;
-				margin-left: 50px;
-				width: 800px;
-			}
-			td
-			{
-				padding: 10px;
-			}
-			.bottom
-			{
-				margin-left: 120px;
-				margin-top: 50px;
-			}
-			
+		    .jumbotron
+		    {
+		    	width: 1000px;
+		    	background-color: white;
+		    }
 
 		</style>
 
-	</head>
+		<div class="jumbotron">
 
-	<body>
+			<div class="card-header"><strong><?php echo $title;?></strong></div>
 
-		<div class="container">
-
-			<div class="jumbotron">
-
-				<h2><?php echo $title;?></h2>
-
+			<div class="card-block">
+			
 			<?php if($cashdata):?>
 
-            <form method="post" action="<?php echo $exe->url->create('default',['controller' => 'dashboard','action' => 'saveeditcash']);?>">
+		    <form method="post" action="<?php echo $exe->url->create('default',['controller' => 'dashboard','action' => 'saveeditcash']);?>" class="form-horizontal">
 
-			<table>
 				<?php foreach ($cashdata as $cashdata) :?>
-				<input type="hidden" value="<?php echo $cashid;?>" name="cid">
-				<tr>
-					<td>Account Type: </td>
-					<td><textarea class="form-control" rows="2" cols="50" name="acc_type"><?php echo $cashdata->account_type;?></textarea></td>
-				</tr>
-				<tr>
-					<td>Bank Place:</td>
-					<td><textarea class="form-control" rows="2" cols="50" name="bank_place"><?php echo $cashdata->bank_place;?></textarea></td>
-				</tr>
-				<tr>
-					<td>Account No:</td>
-					<td><textarea class="form-control" rows="2" cols="50" name="acc_no"><?php echo $cashdata->account_no;?></textarea></td>
-				</tr>
-				<tr>
-					<td>Balance(RM):</td>
-					<td><textarea class="form-control" rows="2" cols="50" name="bal"><?php echo $cashdata->balance;?></textarea></td>
-				</tr>
-				<tr>
-					<td>Name : </td>
-					<td><textarea class="form-control" rows="2" cols="50" name="name"><?php echo $cashdata->name;?></textarea></td>
-				</tr>
-				<tr>
-					<td>Phone : </td>
-					<td><textarea class="form-control" rows="2" cols="50" name="phone"><?php echo $cashdata->phone;?></textarea></td>
-				</tr>
-				<tr>
-					<td>Email : </td>
-					<td><textarea class="form-control" rows="2" cols="50" name="email"><?php echo $cashdata->email;?></textarea></td>
-				</tr>
-				<tr>
-					<td>Second Email:</td>
-					<td><textarea class="form-control" rows="2" cols="50" name="next_email"><?php echo $cashdata->next_email;?></textarea></td>
-				</tr>
+						<input type="hidden" value="<?php echo $cashid;?>" name="cid">
+
+						<div class="form-group row">
+							<label class="col-md-3 form-control-label">Account Type: </label>
+							<div class="col-md-9">
+								<input type="text" name="acc_type" class="form-control" value="<?php echo $cashdata->account_type;?>">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-3 form-control-label">Bank Place:</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="bank_place" value="<?php echo $cashdata->bank_place;?>">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-3 form-control-label">Account No:</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="acc_no" value="<?php echo $cashdata->account_no;?>">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-3 form-control-label">Balance(RM):</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" cols="50" name="bal" value="<?php echo $cashdata->balance;?>">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-3 form-control-label">Name : </label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="name" value="<?php echo $cashdata->name;?>">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-3 form-control-label">Phone : </label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="phone" value="<?php echo $cashdata->phone;?>">
+							</div> 
+						</div>
+						<div class="form-group row">
+							<label class="col-md-3 form-control-label">Email : </label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="email" value="<?php echo $cashdata->email;?>">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-md-3 form-control-label">Alternative Email:</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="next_email" value="<?php echo $cashdata->next_email;?>">
+							</div>
+						</div>
 
 
 				<?php endforeach;?>
 
-
-
-			</table>
-
-				<div class="bottom">
-					<button type="submit" class="btn btn-primary">Save</button>
-					<a href="<?php echo $exe->url->create('default',['controller' => 'dashboard','action' => 'cash']);?>" class="btn btn-primary">Back</a>
-				</div>
-              
-              </form>
+						<div class="card-footer">
+							<button type="submit" class="btn btn-sm btn-primary">Save changes</button>
+							<a href="<?php echo $exe->url->create('default',['controller' => 'dashboard','action' => 'cash']);?>" class="btn btn-sm btn-default">
+								Back</a>
+						</div>
+		              
+		    </form>
 
 			<?php endif;?>
+			</div>
 
 			</div>
 

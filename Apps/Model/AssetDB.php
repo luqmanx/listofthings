@@ -13,6 +13,21 @@ class AssetDB extends Base
 		return $row;
 	}
 
+  function getnewasset($asset_id)
+  {
+    $query = $this->db->table('asset')->where('asset.asset_id',$asset_id);
+    $row = $query->get();
+
+    return $row;
+  }
+
+  function acc_no($asset_id)
+  {
+    $query = $this->db->table('asset_finance')->where('asset_id',$asset_id);
+    $row = $query->first();
+
+    return $row;
+  }
 	public function saveasset($data,$legal,$financeasset,$transaction)
 	{
 		$query = $this->db->table('asset')->insert($data);
@@ -37,7 +52,7 @@ class AssetDB extends Base
        		$this->db->table('asset_transaction')->insert($transaction);
         }
        	
-
+      return $asset_id;
 
 	}
 

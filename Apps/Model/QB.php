@@ -6,14 +6,14 @@ namespace Apps\Model;
 class QB
 {
 
-	public function __construct()
+	public function __construct(array $config)
 	{
 		$this->config = array(
 			'driver' => 'mysql',
 			'host'  => 'localhost',
-			'database' => '',
-			'username' => 'root',
-			'password' => '',
+			'database' => $config['database'],
+			'username' => $config['username'],
+			'password' => $config['password'],
 			'charset' => 'utf8',
 			'collation' => 'utf8_unicode_ci'
 			);

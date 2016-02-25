@@ -6,49 +6,16 @@ class Dashboard extends BaseController
 {
 	public function maininterface(){
 
-		$data = array();
-		$data['exe'] = $this->exe;
-
-		$userid = $this->exe->session->get('user.userid');
-		$getdatauser = $this->query->load('User');
-		$getuser = $getdatauser->getuser($userid);
-
-		if($getuser)
-		{
-			$data['name'] = $getuser->user_name;
-		}
-		else
-		{
-			$data['name'] = 'Anonymous';
-		}
-
-		$data['assetUrl'] = $this->exe->url->asset();
-
-		return $this->render('maininterface',$data);
+		return $this->render('Dashboard','maininterface', $data);
 		
 
 	}
 
 	public function cash()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
-
-		$userid = $this->exe->session->get('user.userid');
-		$getdatauser = $this->query->load('User');
-		$getuser = $getdatauser->getuser($userid);
-
-		if($getuser)
-		{
-			$data['name'] = $getuser->user_name;
-		}
-		else
-		{
-			$data['name'] = 'Anonymous';
-		}
-
+		
 		$getdatacash = $this->query->load('Cash');
-		$getcash = $getdatacash->getcash($userid);
+		$getcash = $getdatacash->getcash($this->userid);
 
 		if ($getcash) 
 		{
@@ -59,117 +26,59 @@ class Dashboard extends BaseController
 			$data['cash'] = '';
 		}
 
-		$data['assetUrl'] = $this->exe->url->asset();
+		return $this->render('My Cash','cash/cash',$data);
+	}
 
-		$this->layout->set($data);
-		$this->layout->set("view",$this->view->create('cash/cash')->set($data));
-		return $this->layout->render();
+	public function addnewcash()
+	{
+
+		return $this->render('My Cash','cash/addnew',$data);
+
 	}
 
 	public function savecash()
 	{
-		$userid = $this->exe->session->get('user.userid');
        
+            $data = array(
+            	'userid' => $this->userid,
+            	'account_type' => $this->exe->request->post('account_type'),
+            	'bank_place' => $this->exe->request->post('bank_place'),
+            	'account_no' => $this->exe->request->post('account_no'),
+               	'balance' => $this->exe->request->post('balance'),
+               	'name' => $this->exe->request->post('name'),
+               	'phone' => $this->exe->request->post('phone'),
+               	'email' => $this->exe->request->post('email'),
+               	'next_email' => $this->exe->request->post('next_email')
+            	);
 
-        for ($i=0; $i < 10 ; $i++) { 
-        	
-        	$cash = $this->exe->request->post('cash'.$i);
-           
+            $savecashdata = $this->query->load('Cash');
+            $new = $savecashdata->savecash($data);
             
-            if($cash){
-        	foreach ($cash as $no => $value) 
-        	{
-        		switch ($no) 
-        		{
-        			case '0':
-        				$account_type = $value;
-        			break;
+            //insert new data to table wish
+            $newcash = $this->query->load('Cash');
+            $newcashdata = $newcash->newcash($new);
 
-        			case '1':
-        				$bank_place = $value;
-
-        			break;
-
-        			case '2':
-        				$account_no = $value;
-        			break;
-
-        			case '3':
-        				$balance = $value;
-        			break;
-
-        			case '4':
-        				$name = $value;
-        			break;
-
-        			case '5':
-        				$phone = $value;
-        			break;
-
-        			case '6':
-        				$email = $value;
-        			break;
-        			
-        			case '7';
-        				$next_email = $value;
-        			break;
-        		}
-
-
-        		
-        	}
-
-        	$data = array(
-               	'userid' => $userid,
-               	 'account_type' => $account_type,
-               	 'bank_place' => $bank_place,
-               	 'account_no' => $account_no,
-               	 'balance' => $balance,
-               	 'name' => $name,
-               	 'phone' => $phone,
-               	 'email' => $email,
-               	 'next_email' => $next_email
-               	);
-              
-               
-               $savecashdata = $this->query->load('Cash');
-               $savecashdata->savecash($data);
-
-            }
-            
-        }  
-
-        	$getcashdata = $this->query->load('Cash');
-        	$getcash = $getcashdata->getcash($userid);
-
-        	if($getcash)
-        	{
-        		foreach ($getcash as $getcash) 
+            foreach ($newcashdata as $newcashdata) 
         		{
         			$new = array(
-             		'user_id' => $getcash->user_id,
+             		'user_id' => $newcashdata->user_id,
 				 	'asset_id' => '',
-				 	'cash_id' => $getcash->cash_id,
-				 	'wish_type' => $getcash->account_type,
-					'wish_address' => $getcash->bank_place,
-				 	'wish_acc' => $getcash->account_no
+				 	'cash_id' => $newcashdata->cash_id,
+				 	'wish_type' => $newcashdata->account_type,
+					'wish_address' => $newcashdata->bank_place,
+				 	'wish_acc' => $newcashdata->account_no
              	);
 
              	$savewish = $this->query->load('WishDB');
              	$savewish->savewishasset($new);
         		}
-        	}
              
         	return $this->exe->redirect->to('default',['controller'=>'dashboard','action'=>'cash']);
-
-        
 
 	}	
 
 	public function editcash()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
 
 		$data['title'] = 'Edit Cash';
 
@@ -187,10 +96,9 @@ class Dashboard extends BaseController
 			$data['cashdata'] = '';
 		}
 
-		$data['assetUrl'] = $this->exe->url->asset();
 		$data['cashid'] = $cash_id;
 
-		return $this->render('cash/editcash',$data);
+		return $this->render('My Cash','cash/editcash',$data);
 
 
 	}

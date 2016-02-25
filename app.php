@@ -4,6 +4,23 @@ require_once "vendor/autoload.php";
 $exedra = new \Exedra\Exedra(__DIR__);
 $myapp = $exedra->build("Apps", function($app)
   {
+    $app->structure->set('view', 'View');
+
+    date_default_timezone_set('Asia/Kuala_Lumpur');
+    
+    // create baseUrl from components in _SERVER.
+    $baseUrl = trim(str_replace('/index.php', '', $_SERVER['PHP_SELF']));
+    $baseUrl = 'http'.'://'.$_SERVER['HTTP_HOST'].$baseUrl;
+
+    $app->config->set('app.url', $baseUrl);
+    $app->config->set('asset.url', $baseUrl.'/assets');
+
+    //set database
+    if($app->loader->has('../env'))
+    {
+      $app->config->set($app->loader->load('../env'));
+    }
+
     $app->setFailRoute('error');
 
     $app->map->addRoutes(array(
@@ -40,15 +57,15 @@ $myapp = $exedra->build("Apps", function($app)
 
          'main' => array(
           'uri' => '',
-          
+          //'module' => 'frontend',
           'subroutes' => array(
             'index' => array(
               'uri' => '',
               'execute' => 'controller=Main@index'
               ),
-            'maintest'=>array(
-              'uri' => 'maintest',
-              'execute' => 'controller=Main@test'
+            'mainback'=>array(
+              'uri' => 'index',
+              'execute' => 'controller=Main@index'
               ),
             'register' => array(
               'uri' => 'register',
@@ -65,6 +82,22 @@ $myapp = $exedra->build("Apps", function($app)
             'login' => array(
               'uri' => 'login',
               'execute' => 'controller=Main@logintemplate'
+              ),
+            'reset' => array(
+              'uri' => 'reset',
+              'execute' => 'controller=Main@reset'
+              ),
+            'reset_password' => array(
+              'uri' => 'reset_password',
+              'execute' => 'controller=Main@reset_password'
+              ),
+            'forgot' => array(
+              'uri' => 'forgot',
+              'execute' => 'controller=Main@forgot'
+              ),
+            'forgot_password' => array(
+              'uri' => 'forgot_password',
+              'execute' => 'controller=Main@forgot_password'
               ),
              'loginprocess' => array(
                 'uri' => 'loginprocess',

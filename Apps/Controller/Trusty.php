@@ -4,27 +4,11 @@ namespace Apps\Controller;
 
 class Trusty extends BaseController
 {
-	function addtrusty()
+	function assigntrusty()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
-
-		$userid = $this->exe->session->get('user.userid');
-		$getuser = $this->query->load('User');
-
-		$user = $getuser->getuser($userid);
-
-		if($user)
-		{
-			$data['name'] = $user->user_name;
-		}
-		else
-		{
-			$data['name'] = 'Anonymous';
-		}
-
+		$data['title'] = 'Assign Trusty';
 		$gettrusty = $this->query->load('TrustyDB');
-		$trusty = $gettrusty->gettrusty($userid);
+		$trusty = $gettrusty->gettrusty($this->userid);
 
 		if($trusty)
 		{
@@ -37,46 +21,46 @@ class Trusty extends BaseController
 			$data['trusty2'] = '';
 		}
 
-		$data['assetUrl'] = $this->exe->url->asset();
+		return $this->render('Assign Trusty','trusty/assigntrusty',$data);
 
-		return $this->render('trusty/addtrusty',$data);
+	}
 
+	function addtrusty()
+	{
+		$data['title'] = 'Add New Trusty';
+		return $this->render('Assign Trusty','trusty/addtrusty',$data);
 	}
 
 	function savetrusty()
 	{	
-		$data = array();
-
-		$data['user_id'] = $this->exe->session->get('user.userid');
+		
+		$data['user_id'] = $this->userid;
 		$data['trusty_name'] = $this->exe->request->post('trusty_name');
 		$data['trusty_phone'] = $this->exe->request->post('trusty_phone');
 		$data['trusty_email'] = $this->exe->request->post('trusty_email');
 		$data['trusty_address'] = $this->exe->request->post('trusty_address');
+		$data['date_updated'] = date("Y-m-d H:i:s");
 
 		$inserttrusty = $this->query->load('TrustyDB');
 
 		$inserttrusty->inserttrusty($data);
 
-		return $this->exe->redirect->to('default',['controller'=>'trusty','action'=>'addtrusty']);
+		return $this->exe->redirect->to('default',['controller'=>'trusty','action'=>'assigntrusty']);
 	}
 
 	function deletetrusty()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
 
 		$tid = $this->exe->request->get('tid');
 
 		$deletetrusty = $this->query->load('TrustyDB');
 		$deletetrusty->deletetrusty($tid);
 
-		return $this->exe->redirect->to('default',['controller'=>'trusty','action'=>'addtrusty']);
+		return $this->exe->redirect->to('default',['controller'=>'trusty','action'=>'assigntrusty']);
 	}
 
 	function edittrusty()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
 
 		$tid = $this->exe->request->get('tid');
 
@@ -92,11 +76,10 @@ class Trusty extends BaseController
 			$data['edittrusty'] = '';
 		}
 
-		$data['title'] = 'Edit trusty Data';
+		$data['title'] = 'Edit trusty';
 		$data['trusty_id'] = $tid;
-		$data['assetUrl'] = $this->exe->url->asset();
 
-		return $this->render('trusty/edittrusty',$data);
+		return $this->render('Assign Trusty','trusty/edittrusty',$data);
 	}
 
 	function saveedittrusty()
@@ -121,7 +104,7 @@ class Trusty extends BaseController
 		$saveedittrusty = $this->query->load('TrustyDB');
 		$saveedittrusty->saveedittrusty($data,$tid);
 
-		return $this->exe->redirect->to('default',['controller'=>'trusty','action'=>'addtrusty']);
+		return $this->exe->redirect->to('default',['controller'=>'trusty','action'=>'assigntrusty']);
 
 	}
 }

@@ -20,9 +20,19 @@ class Cash extends Base
     'next_email' => $data['next_email']
     );
 
-    $this->db->table('cash')->insert($new);
+    $newinsert = $this->db->table('cash')->insert($new);
+    return $newinsert;
        
 	}
+
+  public function newcash($cash_id)
+  {
+    $query = $this->db->table('cash')->where('cash_id','=', $cash_id);
+
+    $row = $query->get();
+
+    return $row;
+  }
 
   public function getcash($userid)
   {

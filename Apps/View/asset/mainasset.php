@@ -1,67 +1,14 @@
-<html>
 
-	<head>
-
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" type="text/css" href="<?php echo $assetUrl;?>/css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="<?php echo $assetUrl;?>/css/bootstrap-theme.min.css">
-		<link rel="stylesheet" type="text/css" href="<?php echo $assetUrl;?>/css/jasny-bootstrap.min.css">
-
-		<script type="text/javascript" src="<?php echo $assetUrl;?>/js/jquery_v1_11_3.min.js"></script>
-		<script type="text/javascript" src="<?php echo $assetUrl;?>/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="<?php echo $assetUrl;?>/js/jasny-bootstrap.min.js"></script>
+		<script type="text/javascript" src="<?php echo $exe->url->asset('js/jquery_v1_11_3.min.js');?>"></script>
 
 		<style type="text/css">
 			.jumbotron
 			{
-				margin-top: 30px;
+				background-color: white;
 			}
-			.top
+			.navbar navbar-light brand-dark
 			{
-				margin-top: 30px;
-			}
-			td
-			{
-				padding: 10px;
-			}
-			.btn-primary
-			{
-				width: 150px;
-			}
-			.responsive-width 
-			{
-    			width:1000px;
-			}
-			table.right
-			{
-				border-spacing: 10px;
-				border-collapse: separate;
-			}
-			td.right
-			{
-				border: 2px solid black;
-				width: 150px;
-				background-color: #CC7BDC;
-			}
-
-			/* make sidebar nav vertical */ 
-			@media (min-width: 768px) {
-			  .sidebar-nav .navbar .navbar-collapse {
-			    padding: 0;
-			    max-height: none;
-			  }
-			  .sidebar-nav .navbar ul {
-			    float: none;
-			    display: block;
-			  }
-			  .sidebar-nav .navbar li {
-			    float: none;
-			    display: block;
-			  }
-			  .sidebar-nav .navbar li a {
-			    padding-top: 12px;
-			    padding-bottom: 12px;
-			  }
+				padding-bottom: 0px;
 			}
 			
 		</style>
@@ -112,107 +59,101 @@
 
 			});
 		</script>
-
-		<script>
-			function submitForm()
-			{
-				$('#submitasset').submit();
-			}
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				  var requiredCheckboxes = $(':checkbox[required]');
+				  requiredCheckboxes.on('change', function(e) {
+				    var checkboxGroup = requiredCheckboxes.filter('[name="' + $(this).attr('name') + '"]');
+				    var isChecked = checkboxGroup.is(':checked');
+				    checkboxGroup.prop('required', !isChecked);
+				  });
+				});
 		</script>
-	</head>
+		
 
-	<body>
-
-		<div class="container">
 
 			<div class="jumbotron">
-				
-				<form method="post" id="submitasset" action="<?php echo $exe->url->create('default',['controller' => 'asset','action'=>'saveasset']);?>">
 
-					<div class="row">
-					  <div class="col-sm-3">
-					    <div class="sidebar-nav">
-					      <div class="navbar navbar-default" role="navigation">
-					        <div class="navbar-header">
-					          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
-					            <span class="sr-only">Toggle navigation</span>
-					            <span class="icon-bar"></span>
-					            <span class="icon-bar"></span>
-					            <span class="icon-bar"></span>
-					          </button>
-					          <span class="visible-xs navbar-brand">Sidebar menu</span>
-					        </div>
-					        <div class="navbar-collapse collapse sidebar-navbar-collapse">
-					          <ul class="nav navbar-nav">
-					            <li class="active"><a href="#what" aria-control="what" role="tab" data-toggle="tab">What is it?</a></li>
-					            <li><a href="#where" aria-control="where" role="tab" data-toggle="tab">Where is it?</a></li>
-					            <li><a href="#dev" aria-control="dev" role="tab" data-toggle="tab">Developer</a></li>
-					            <li><a href="#status" aria-control="status" role="tab" data-toggle="tab">Status</a></li>
-					            <li><a href="#financing" aria-control="status" role="tab" data-toggle="tab">Financing</a></li>
-					            <li><a href="#legal" aria-control="legal" role="tab" data-toggle="tab">Legal Information</a></li>
-					            <li><a href="#notes" aria-control="notes" role="tab" data-toggle="tab">Notes</a></li>
-					          </ul>
-					        </div><!--/.nav-collapse -->
-					      </div>
-					    </div>
-					  </div>
-					  <div class="col-sm-9">
-					  	<div class="tab-content">
-					  		<div class="tab-pane active" id="what">
-					  			<textarea class="form-control" placeholder="KLCC Apartment" rows="3" cols="10" name="asset_type"></textarea>
-					  		</div>
-							<div role="tabpanel" class="tab-pane" id="where">
-								<textarea class="form-control" placeholder="Address" rows="3" cols="30" name="asset_address"></textarea>
-							</div>
-						    <div role="tabpanel" class="tab-pane" id="dev">
-						    	<textarea class="form-control" placeholder="e.g. YTL" rows="3" cols="30" name="asset_dev"></textarea>
-						    </div>
-						    <div role="tabpanel" class="tab-pane" id="status">
-						    	<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="development">Development</label></div></p>
-								<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="got keys">Got the keys</label></div></p>
-								<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="empty">Empty</label></div></p>
-								<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="tenanted">Tenanted</label></div></p>
-								<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="live">I live here</label></div></p>
-								<p><div class="checkbox"><label><input type="checkbox" id="sell" name="status[]" value="midst sell">Midst of selling</label></div></p>
-								<p><div class="checkbox"><label><input type="checkbox" id="buy" name="status[]" value="midst buy">Midst of buying</label></div></p>
+				<div class="card-header"><strong>Add New Asset</strong></div>
+					
+				<div class="card-block">
+				<form method="post" action="<?php echo $exe->url->create('default',['controller' => 'asset','action'=>'saveasset']);?>" class="form-horizontal">
 
-								<table id="sellbuycont">
-									<tr>
-										
-										<td style="border:2px solid black;background-color: #CC7BDC;" colspan="2">Asset Transaction Info</td>
-												
-									</tr>
-
-									<tr>
-
-										<td><input type="text" class="form-control" placeholder="Buyer/Seller" name="buysellname"></td>
-										<td><input type="text" class="form-control" placeholder="Contact" name="buysellcont"></td>
-									</tr>
-
-									<tr>
-										<td><input type="text" class="form-control" placeholder="Lawyer" name="lawyername"></td>
-										<td><input type="text" class="form-control" placeholder="Contact" name="lawyercont"></td>
-									</tr>				
-										
-									<tr>
-										<td><input type="text" class="form-control" placeholder="Price" name="price"></td>
-										<td><input type="text" class="form-control" placeholder="Status" name="statusfin"></td>
-									</tr>		
-							
-								</table>
-
-						    </div>
-						    <div role="tabpanel" class="tab-pane" id="financing">
-						    	<p><div class="checkbox"><label><input type="checkbox" id="financeno" name="financing[]" value="no">No</label></div></p>
-								<p><div class="checkbox"><label><input type="checkbox" id="financeyes" name="financing[]" value="yes">Yes</label></div></p>
-
-								<table id="financecont">
-									<tr>
-										
-										<td style="border:2px solid black;background-color: #CC7BDC;width:250px;" colspan="2">Financing Info</td>
-
-									</tr>		
-									
+					<div class="form-group row">
+						<label class="col-md-3 form-control-label">What is it?</label>
+						<div class="col-md-9">
+							<input type="text" name="asset_type" class="form-control" placeholder="Enter Asset Type..eg:KLCC Apartment">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 form-control-label">Where is it?</label>
+						<div class="col-md-9">
+							<input type="text" name="asset_address" class="form-control" placeholder="Enter Asset Address">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 form-control-label">Developer</label>
+						<div class="col-md-9">
+							<input type="text" name="asset_dev" class="form-control" placeholder="e.g. YTL">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 form-control-label">Status</label>
+						<div class="col-md-9">
+							<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="development" required>Development</label></div></p>
+							<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="got keys" required>Got the keys</label></div></p>
+							<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="empty" required>Empty</label></div></p>
+							<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="tenanted" required>Tenanted</label></div></p>
+							<p><div class="checkbox"><label><input type="checkbox" name="status[]" value="live" required>I live here</label></div></p>
+							<p><div class="checkbox"><label><input type="checkbox" id="sell" name="status[]" value="midst sell" required>Midst of selling</label></div></p>
+							<p><div class="checkbox"><label><input type="checkbox" id="buy" name="status[]" value="midst buy" required>Midst of buying</label></div></p>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 form-control-label"></label>
+						<div class="col-md-9">
+						<table id="sellbuycont" class="table table-bordered table-striped table-condensed">
+							<thead>
+								<tr>
+									<th>Asset Transaction Info</th>	
+									<th></th>		
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input type="text" class="form-control" placeholder="Buyer/Seller" name="buysellname"></td>
+									<td><input type="text" class="form-control" placeholder="Contact" name="buysellcont"></td>
+								</tr>
+								<tr>
+									<td><input type="text" class="form-control" placeholder="Lawyer" name="lawyername"></td>
+									<td><input type="text" class="form-control" placeholder="Contact" name="lawyercont"></td>
+								</tr>					
+								<tr>
+									<td><input type="text" class="form-control" placeholder="Price" name="price"></td>
+									<td><input type="text" class="form-control" placeholder="Status" name="statusfin"></td>
+								</tr>
+							</tbody>
+						</table>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 form-control-label">Financing</label>
+						<div class="col-md-9">
+							<p><div class="checkbox"><label><input type="checkbox" id="financeno" name="financing[]" value="no" required>No</label></div></p>
+							<p><div class="checkbox"><label><input type="checkbox" id="financeyes" name="financing[]" value="yes">Yes</label></div></p>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 form-control-label"></label>
+						<div class="col-md-9">
+							<table id="financecont" class="table table-bordered table-striped table-condensed">
+								<thead>
+									<tr>	
+										<th>Financing Info</th>
+										<th></th>
+									</tr>	
+								</thead>
+								<tbody>
 									<tr>
 										<td><input type="text" class="form-control" placeholder="Bank" name="bank"></td>
 										<td><input type="text" class="form-control" placeholder="Account #" name="acc_no"></td>
@@ -235,16 +176,22 @@
 			 									<a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
 											</div>
 										</td>
-									</tr>	
-								</table>
-
-						    </div>
-						    <div role="tabpanel" class="tab-pane" id="legal">
-						    	<table class="right">
-									<tr>
-										<td class="right">S & P</td>
-										<td class="right">Financing</td>
 									</tr>
+								</tbody>			
+								</table>
+							</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 form-control-label">Legal Information</label>
+						<div class="col-md-9">
+							<table class="table table-bordered table-striped table-condensed">
+								<thead>
+									<tr>
+										<th>S & P</th>
+										<th>Financing</th>
+									</tr>
+								</thead>
+								<tbody>
 									<tr>
 										<td><input type="text" placeholder="Name" class="form-control" name="sp_name"></td>
 										<td><input type="text" placeholder="Name" class="form-control" name="finance_name"></td>
@@ -257,27 +204,21 @@
 										<td><input type="text" placeholder="Email" class="form-control" name="sp_email"></td>
 										<td><input type="text" placeholder="Email" class="form-control" name="finance_email"></td>
 									</tr>
-								</table>
-						    </div>
-						    <div role="tabpanel" class="tab-pane" id="notes">
-						    	<textarea class="form-control" placeholder="XXX" rows="4" name="notes"></textarea>
-						    </div>
-
-					  	</div>
-					  
-					  
+								</tbody>	
+							</table>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 form-control-label">Notes</label>
+						<div class="col-md-9">
+							<input type="text" name="notes" class="form-control" placeholder="XXX">
+						</div>
+					</div>
 					    
-					  </div>
+					<div class="card-footer">
+						<button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i>Submit</button>
+						<button type="reset" class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>Reset</button>
 					</div>
-
-				<nav>
-					<div class="container-fluid">
-						<ul class="nav navbar-nav navbar-right">
-							<li><a href="<?php echo $exe->url->create('default',['controller' => 'asset','action'=>'viewasset']);?>"><span class="glyphicon glyphicon-level-up"></span>Back</a></li>
-							<li><a href="javascript:submitForm();"><span class="glyphicon glyphicon-floppy-save"></span>Save</a></li>
-						</ul>
-					</div>
-				</nav>
 
 				</form>
 
@@ -285,7 +226,3 @@
 
 			</div>
 			</div>
-
-
-		</body>
-		</html>

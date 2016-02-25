@@ -1,0 +1,47 @@
+
+STAGING APP : 10.1.2.134 (digicert/gundal4X!) (su root/ksfm98tr)
+STAGING DB localhost
+
+---------------------------
+web application directory :
+---------------------------
+/opt/lampp/htdocs/entpostme-prod
+
+
+-------
+mysql : http://10.1.2.134/finance/hello/adminer.php
+-------
+u : postme
+p : P@ssw0rd
+db : entpostme
+
+
+====
+VPN
+====
+url : remote.pos.com.my
+1. use Internet Explorer
+2. go to the url
+3. select Local
+4. u : luqman, p : gundal4X!
+
+========
+Operation
+=========
+magento - http://10.1.2.134/admin  : squarepos / gundal4X!
+merchant http://10.1.2.134/merchant/ : smartshop / p@ssword18 #not needed for this task
+admin - http://10.1.2.134/adminpostme : sabrinder / p0stM3@p0s456 #not needed for this task
+finance- http://10.1.2.134/finance : jessie / p0stM3@p0s321
+
+SAP
+====
+Generated SAP files : http://10.1.2.134/finance/generated_sap/
+
+Go to postme finance login, go to SAP > SAP Manual , put in dates and generate report
+Test dates
+29 Oct 2013
+31 Dec 2013
+
+
+
+

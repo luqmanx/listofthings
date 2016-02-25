@@ -2,7 +2,6 @@
 
 namespace Apps\Controller;
 
-
 class Main
 {
 
@@ -11,12 +10,8 @@ class Main
 		$this->exe = $exe;
 		$this->view = $this->exe->view;
 
-		$this->exe->url->setBase('');
-        $this->exe->url->setAsset('');
-
-        $this->query = new \Apps\Model\QB();
-
-
+        $this->query = new \Apps\Model\QB($exe->config->get('db'));
+        
 	}
 
 	public function index()
@@ -43,7 +38,8 @@ class Main
 		$data = array(
 			'username' => $username,
 			'email' => $email,
-			'password' => $password
+			'password' => $password,
+			'updated_at' => date("Y-m-d H:i:s")
 			);
 
         $insertdata = $this->query->load('User');
@@ -52,14 +48,12 @@ class Main
         if ($validates) 
         {
 
-        	foreach ($validates as $validate) {
+	    	$this->exe->flash->set('error_user','Username and email already exists. Please login to your account');
+	    	$this->exe->flash->set('username' , $username);
+	    	$this->exe->flash->set('email', $email);
+	    	$this->exe->flash->set('password' , $this->exe->request->post('password'));
 
-            	$this->exe->flash->set('error_user','Username and email already exists. Please login to your account');
-            	$this->exe->flash->set('username' , $username);
-            	$this->exe->flash->set('email', $email);
-            	$this->exe->flash->set('password' , $password);
-            	return $this->exe->redirect->to('index');
-        	  }
+			return $this->exe->redirect->to('mainback');
         	
         }
         else
@@ -68,20 +62,20 @@ class Main
         $getuser = $this->query->load('User');
         $user = $getuser->getuser($newuserid);
 
-        if($user)
-        {
-        	$this->exe->session->set('user.userid', $user->user_id);
-        	return $this->exe->redirect->to('@admin.default',['controller'=>'dashboard','action'=>'maininterface']);
-        }
+	        if($user)
+	        {
+	        	$this->exe->session->set('user.userid', $user->user_id);
+	        	return $this->exe->redirect->to('@admin.default',['controller'=>'dashboard','action'=>'maininterface']);
+	        }
 
-    	}
+	    }
 
 	}
 
 	public function signup()
 	{
       $data = array();
-      $data['title'] = "Sign Up Page";
+      $data['title'] = "Sign Up";
       $data['exe'] = $this->exe;
 
       $data['assetUrl'] = $this->exe->url->asset();
@@ -89,52 +83,10 @@ class Main
       return $this->view->create("signup")->set($data)->render();
 	}
 
-	public function signupprocess()
-	{
-
-		$username = $this->exe->request->post('username_signup');
-		$email = $this->exe->request->post('email_signup');
-		$password = md5($this->exe->request->post('password_signup'));
-
-		$data = array(
-			'username' => $username,
-			'email' => $email,
-			'password' => $password
-			);
-        
-        $signupdata = $this->query->load('User');
-        $validatesignupdatas = $signupdata->validate($data);
-        
-        if($validatesignupdatas)
-		{
-			foreach ($validatesignupdatas as $validatesignupdata) {
-				$this->exe->flash->set('error_signup', 'Username and email already exists. Please login to your account');
-				$this->exe->flash->set('signup_username' , $username);
-				$this->exe->flash->set('signup_email', $email);
-				$this->exe->flash->set('signup_password', $password);
-				return $this->exe->redirect->to('signup');
-			}
-		}
-		else
-		{
-        $newuserid = $signupdata->register($data);
-        $getuser = $this->query->load('User');
-        $user = $getuser->getuser($newuserid);
-
-        if($user)
-        {
-        	$this->exe->session->set('user.userid', $user->user_id);
-        	return $this->exe->redirect->to('@admin.default',['controller'=>'dashboard','action'=>'maininterface']);
-        }
-
-	    }
-
-	}
-
 	public function logintemplate()
 	{
 		$data = array();
-		$data['title'] = "Login Page";
+		$data['title'] = "Sign In";
 		$data['exe'] = $this->exe;
 
 		$data['assetUrl'] = $this->exe->url->asset();
@@ -174,6 +126,119 @@ class Main
 		
 		}
 	}
+
+	public function forgot()
+	{
+		$data = array();
+		$data['title'] = "Forgot Password";
+		$data['exe'] = $this->exe;
+
+		$data['assetUrl'] = $this->exe->url->asset();
+
+		return $this->view->create('forgot')->set($data)->render();
+	}
+
+	public function forgot_password()
+	{
+		$data = array();
+		$data['exe'] = $this->exe;
+		$data['title'] = 'Reset Link';
+
+		$data['assetUrl'] = $this->exe->url->asset();
+
+		$data['email_forgot'] = $this->exe->request->post('email_forgot');
+
+		$getemail = $this->query->load('User');
+		$user = $getemail->getemail($data['email_forgot']);
+
+		if($user)
+		{
+			$this->sendmail($user);
+			return $this->view->create('forgot_password')->set($data)->render();
+		}
+
+		else
+		{
+			$this->exe->flash->set('error_email', 'Email not found. Please enter correct email.');
+			$this->exe->flash->set('email_forgot_error',$data['email_forgot']);
+
+			return $this->exe->redirect->to('forgot');
+		}
+
+		
+
+	}
+
+	function sendmail($data)
+	{
+		
+		$exe = $this->exe;
+
+		$base = $this->exe->url->base();
+
+		$to = $data->user_email;
+		$id = $data->user_id;
+		$link = $base.'reset';
+		
+		$body = '<p>Click <a href="'.$link.'?uid='.$id.'">here </a>to reset password.</p>';
+
+		$mail = new \PHPMailer;
+
+		$mail->isSMTP();
+		
+		$mail->Host = 'smtp.gmail.com';
+		$mail->Port = 465;
+		$mail->SMTPSecure = 'ssl';
+		$mail->SMTPAuth = true;
+		$mail->Username = 'ifa@digitalgaia.com';
+		$mail->Password = 'ifasazuani89';
+		$mail->addAddress($to);
+		$mail->Subject = 'Reset Link';
+		$mail->msgHTML($body);
+
+
+		$mail->From = 'ifa@digitalgaia.com';
+       	$mail->FromName = 'Will-List';
+       	$mail->AddReplyTo('iifasazuani@gmail.com');
+
+		$mail->send();
+
+	}
+
+	function reset()
+	{
+		$data = array();
+		$data['exe'] = $this->exe;
+		$data['title'] = 'Reset Password';
+
+		$data['assetUrl'] = $this->exe->url->asset();
+
+		$data['user_id'] = $this->exe->request->get('uid');
+
+		return $this->view->create('reset')->set($data)->render();
+	}
+
+	function reset_password()
+	{
+		$data = array();
+		$data['exe'] = $this->exe;
+		$data['assetUrl'] = $this->exe->url->asset();
+		$data['title'] = 'Reset Password Success';
+		$data['user_id'] = $this->exe->request->post('user_id');
+
+		$new = array(
+			'user_id' => $data['user_id'] ,
+			'user_password' => md5($this->exe->request->post('new_password')),
+			'updated_at' => date("Y-m-d H:i:s")
+			);
+
+		$reset_password = $this->query->load('User');
+		$reset_password->reset_password($new);
+
+		return $this->view->create('reset_password')->set($data)->render();
+
+	}
+	
 
 
 }

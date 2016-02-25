@@ -1,6 +1,7 @@
 {
     "require": {
         "rosengate/exedra": "dev-master",
-        "usmanhalalit/pixie": "1.*@dev"
+        "usmanhalalit/pixie": "1.*@dev",
+        "phpmailer/phpmailer": "~5.2"
     }
 }

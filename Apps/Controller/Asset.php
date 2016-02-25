@@ -4,36 +4,14 @@ namespace Apps\Controller;
 
 class Asset extends BaseController
 {
-
-	public function mainasset()
+	function addasset()
 	{
-
-		$data = array();
-		$data['exe'] = $this->exe;
-
-		$userid = $this->exe->session->get('user.userid');
-		$getdatauser = $this->query->load('User');
-		$getuser = $getdatauser->getuser($userid);
-
-		if($getuser)
-		{
-			$data['name'] = $getuser->user_name;
-		}
-		else
-		{
-			$data['name'] = 'Anonymous';
-		}
-
-		$data['assetUrl'] = $this->exe->url->asset();
-
-		return $this->render('asset/mainasset',$data);
+		return $this->render('My Asset','asset/addasset',$data);
 	}
 
 	public function saveasset()
 	{
-		$data = array();
-
-		$data['user_id'] = $this->exe->session->get('user.userid');
+        $data['user_id'] = $this->userid;
 		$data['type'] = $this->exe->request->post('asset_type');
 		$data['address'] = $this->exe->request->post('asset_address');
 		$data['developer'] = $this->exe->request->post('asset_dev');
@@ -46,120 +24,128 @@ class Asset extends BaseController
 
 		$data['notes'] = $this->exe->request->post('notes');
 
-		$legal = array();
+		//legal information - asset_legal
+		$sp_name = $this->exe->request->post('sp_name');
+		$sp_phone = $this->exe->request->post('sp_phone');
+		$sp_email = $this->exe->request->post('sp_email');
+		$finance_name = $this->exe->request->post('finance_name');
+		$finance_phone = $this->exe->request->post('finance_phone');
+		$finance_email = $this->exe->request->post('finance_email');
+        
+        if(($sp_name || $sp_phone || $sp_email ||$finance_name ||$finance_phone ||$finance_email)!= '')
+        {
+        	$legal = array(
+        		'sp_name' => $sp_name,
+        		'sp_phone' => $sp_phone,
+        		'sp_email' => $sp_email,
+        		'finance_name' => $finance_name,
+        		'finance_phone' => $finance_phone,
+        		'finance_email' => $finance_email
+        		);
 
-		if($this->exe->request->post('sp_name'))
-		{
-			$legal['sp_name'] = $this->exe->request->post('sp_name');
-		}
-		if ($this->exe->request->post('sp_phone')) 
-		{
-			$legal['sp_phone'] = $this->exe->request->post('sp_phone');
-		}
-		if($this->exe->request->post('sp_email'))
-		{
-			$legal['sp_email'] = $this->exe->request->post('sp_email');
-		}
-		if($this->exe->request->post('finance_name'))
-		{
-			$legal['finance_name'] = $this->exe->request->post('finance_name');
-		}
-		if($this->exe->request->post('finance_phone'))
-		{
-			$legal['finance_phone'] = $this->exe->request->post('finance_phone');
-		}
-		if ($this->exe->request->post('finance_email')) {
-			$legal['finance_email'] = $this->exe->request->post('finance_email');
-		}
-	
-
-		$financeasset = array();
-
-		if($this->exe->request->post('bank'))
-		{
-			$financeasset['bank'] = $this->exe->request->post('bank');
-		}
-		if($this->exe->request->post('acc_no'))
-		{
-			$financeasset['acc_no'] = $this->exe->request->post('acc_no');
-		}
-		if($this->exe->request->post('monthly_payment'))
-		{
-			$financeasset['monthly_payment'] = $this->exe->request->post('monthly_payment');
-		}
-		if($this->exe->request->post('MRTA'))
-		{
-			$financeasset['MRTA'] = $this->exe->request->post('MRTA');
-		}
-		if ($this->exe->request->post('loan_amount')) 
-		{
-
-			$financeasset['loan_amount'] = $this->exe->request->post('loan_amount');
-		}
-		if($this->exe->request->post('doc_path'))
-		{
-			$financeasset['doc_path'] = $this->exe->request->post('doc_path');
-		}
+        }
+        else
+        {
+        	$legal = '';
+        }
 		
+		//asset_finance
+		$bank = $this->exe->request->post('bank');
+		$acc_no = $this->exe->request->post('acc_no');
+		$monthly_payment = $this->exe->request->post('monthly_payment');
+		$MRTA = $this->exe->request->post('MRTA');
+		$loan_amount = $this->exe->request->post('loan_amount');
+		$doc_path = $this->exe->request->post('doc_path');
+        
+        $financeinfo = unserialize($data['financing']);
 
-		$transaction = array();
+        if(in_array('yes', $financeinfo))
+        {
+        	$financeasset = array(
+        		'bank' => $bank,
+        		'acc_no' => $acc_no,
+        		'monthly_payment' => $monthly_payment,
+        		'MRTA' => $MRTA,
+        		'loan_amount' => $loan_amount,
+        		'doc_path' => $doc_path
+        		);
 
-		$transaction['buyer_seller'] = $this->exe->request->post('buysellname');
-		$transaction['buyer_seller_contact'] = $this->exe->request->post('buysellcont');
-		$transaction['lawyer'] = $this->exe->request->post('lawyername');
-		$transaction['lawyer_contact'] = $this->exe->request->post('lawyercont');
-		$transaction['price'] = $this->exe->request->post('price');
-		$transaction['status'] = $this->exe->request->post('statusfin');
+        }
+        else
+        {
+        	$financeasset = '';
+        }
 
+        //asset_transaction
+        $buyer_seller = $this->exe->request->post('buysellname');
+        $buyer_seller_contact = $this->exe->request->post('buysellcont');
+        $lawyer = $this->exe->request->post('lawyername');
+        $lawyer_contact = $this->exe->request->post('lawyercont');
+        $price = $this->exe->request->post('price');
+        $status = $this->exe->request->post('statusfin');
+
+        if(($buyer_seller || $buyer_seller_contact || $lawyer ||$lawyer_contact ||$price ||$status)!= '')
+        {
+        	$transaction = array(
+        		'buyer_seller' => $buyer_seller,
+        		'buyer_seller_contact' => $buyer_seller_contact,
+        		'lawyer' => $lawyer,
+        		'lawyer_contact' => $lawyer_contact,
+        		'price' => $price,
+        		'status' => $status
+        		);
+        }
+        else
+        {
+        	$transaction = '';
+        }
+
+        //save all asset data
 		$saveassetdata = $this->query->load('AssetDB');
-		$saveassetdata->saveasset($data,$legal,$financeasset,$transaction);
-
+		$newasset = $saveassetdata->saveasset($data,$legal,$financeasset,$transaction);
 		
-		$getassetdata = $this->query->load('AssetDB');
-		$getasset = $getassetdata->getasset($data['user_id']);
+		//get latest asset data insert
+		$getnewasset = $this->query->load('AssetDB');
+		$getasset = $getnewasset->getnewasset($newasset);
 
-		if($getasset)
-		{   
-			foreach ($getasset as $getasset) 
+		foreach ($getasset as $getasset) 
 			{
+				$financing = unserialize($getasset->financing);
+
 				$newwish = array(
 					'user_id' => $getasset->user_id,
 				  	'asset_id' => $getasset->asset_id,
 				  	'cash_id' => '',
 				  	'wish_type' => $getasset->type,
-				  	'wish_address' => $getasset->address,
-				  	'wish_acc' => $getasset->acc_no
-			);
-			$savewishasset = $this->query->load('WishDB');
-			$savewishasset->savewishasset($newwish);
-			}
-			
-		}
+				  	'wish_address' => $getasset->address
+				);
+				
+				if(in_array('yes', $financing))
+				{
+					$acc_no = $this->query->load('AssetDB');
+					$getacc_no = $acc_no->acc_no($getasset->asset_id);
 
-		return $this->exe->redirect->to('default',['controller'=>'asset','action' => 'mainasset']);
+					$newwish['wish_acc'] = $getacc_no->acc_no;
+				}
+				else
+				{
+					$newwish['wish_acc'] = '';
+				}
+
+				//insert to wish table
+				$savewishasset = $this->query->load('WishDB');
+				$savewishasset->savewishasset($newwish);
+			}
+
+			
+		return $this->exe->redirect->to('default',['controller'=>'asset','action' => 'viewasset']);
 
 	}
 
 	function viewasset()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
-
-		$userid = $this->exe->session->get('user.userid');
-		$getdatauser = $this->query->load('User');
-		$getuser = $getdatauser->getuser($userid);
-
-		if($getuser)
-		{
-			$data['name'] = $getuser->user_name;
-		}
-		else
-		{
-			$data['name'] = 'Anonymous';
-		}
-
 		$getviewasset = $this->query->load('AssetDB');
-		$getview = $getviewasset->getviewasset($userid);
+		$getview = $getviewasset->getviewasset($this->userid);
 
 		if($getview)
 		{
@@ -170,19 +156,11 @@ class Asset extends BaseController
 			$data['viewasset'] = '';
 		}
 
-		$data['assetUrl'] = $this->exe->url->asset();
-
-		$this->layout->set($data);
-		$this->layout->set("view",$this->view->create('asset/viewasset')->set($data));
-		return $this->layout->render();
+		return $this->render('My Asset','asset/viewasset',$data);
 	}
 
 	function editasset()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
-
-		$userid = $this->exe->session->get('user.userid');
 		
 		$aid = $this->exe->request->get('aid');
 
@@ -238,7 +216,7 @@ class Asset extends BaseController
 		$data['title'] = 'Edit Asset Data';
 		$data['aid'] = $aid;
 
-		return $this->render('asset/editasset',$data);
+		return $this->render('My Asset','asset/editasset',$data);
 	}
 
 	function saveeditasset()
@@ -337,15 +315,13 @@ class Asset extends BaseController
 
 	function deleteasset()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
 
 		$aid = $this->exe->request->get('aid');
 
 		$deleteasset = $this->query->load('AssetDB');
 		$deleteasset->deleteasset($aid);
 
-		return $this->exe->redirect->to('default',['controller'=>'asset','action' => 'mainasset']);
+		return $this->exe->redirect->to('default',['controller'=>'asset','action' => 'addasset']);
 
 
 	}

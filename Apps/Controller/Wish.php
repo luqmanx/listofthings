@@ -6,24 +6,9 @@ class Wish extends BaseController
 {
 	public function mainwish()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
-
-		$userid = $this->exe->session->get('user.userid');
-		$getdatauser = $this->query->load('User');
-		$getuser = $getdatauser->getuser($userid);
-
-		if($getuser)
-		{
-			$data['name'] = $getuser->user_name;
-		}
-		else
-		{
-			$data['name'] = 'Anonymous';
-		}
 
 		$getdatawish = $this->query->load('WishDB');
-		$getwishasset = $getdatawish->getwishasset($userid);
+		$getwishasset = $getdatawish->getwishasset($this->userid);
 
 		if($getwishasset)
 		{
@@ -35,57 +20,28 @@ class Wish extends BaseController
 
 		}
 
+		return $this->render('My Wish','wish/mainwish',$data);
+	}
 
-		$data['assetUrl'] = $this->exe->url->asset();
-
-		$this->layout->set($data);
-		$this->layout->set("view",$this->view->create('wish/mainwish')->set($data));
-		return $this->layout->render();
+	function addwish()
+	{
+		return $this->render('My Wish','wish/addwish',$data);
 	}
 
 	public function savewish()
 	{
-		
-		$userid = $this->exe->session->get('user.userid');
 
+		$data = array(
+		'user_id' => $this->userid,
+		'wish_type' => $this->exe->request->post('wish_type'),
+		'wish_address' => $this->exe->request->post('wish_address'),
+		'wish_acc' => $this->exe->request->post('wish_account_no'),
+		'wish_dolist' => $this->exe->request->post('wish_dolist'),
+		'wish_notify' => $this->exe->request->post('wish_notify')
+		);
 
-			$asset = $this->exe->request->post('asset');
-			
-			if($asset)
-			{
-	
-				foreach ($asset as $wishid => $valuewish) 
-				{
-				  foreach ($valuewish as $key => $value) {
-				  	switch ($key) 
-				  	{
-				  	case '0':
-				  		$wish_dolist = $value;
-				  	break;
-				  	case '1':
-				  		$wish_notify = $value;
-				  	break;
-				 	 }
-
-				 	 $data = array(
-					'user_id' => $userid,
-				  	'wish_id' => $wishid,
-				  	'wish_dolist' => $wish_dolist,
-				  	'wish_notify' => $wish_notify
-				  	);
-
-					$savewishassetupdate = $this->query->load('WishDB');
-					$savewishassetupdate->updatewishasset($data);
-
-				  }
-				  
-				 
-				}
-
-
-				
-			}
-
+		$savewishasset = $this->query->load('WishDB');
+		$savewishasset->savewishasset($data);
 
 		return $this->exe->redirect->to('default',['controller'=>'wish','action' => 'mainwish']);
 		
@@ -93,9 +49,7 @@ class Wish extends BaseController
 
 	public function editwish()
 	{
-		$data = array();
-		$data['exe'] = $this->exe;
-
+	
 		$data['title'] = 'Edit Wish';
 
 		$wish_id = $this->exe->request->get('wid');
@@ -112,10 +66,9 @@ class Wish extends BaseController
 			$data['wish'] = '';
 		}
 
-		$data['assetUrl'] = $this->exe->url->asset();
 		$data['wishid'] = $wish_id;
 
-		return $this->render('wish/editwish',$data);
+		return $this->render('My Wish','wish/editwish',$data);
 	}
 
 	public function updatewish()
