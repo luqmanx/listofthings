@@ -53,7 +53,7 @@ class Main
 	    	$this->exe->flash->set('email', $email);
 	    	$this->exe->flash->set('password' , $this->exe->request->post('password'));
 
-			return $this->exe->redirect->to('mainback');
+			return $this->exe->redirect->to('@main.index');
         	
         }
         else
@@ -74,16 +74,10 @@ class Main
 
 	public function signup()
 	{
-      $data = array();
-      $data['title'] = "Sign Up";
-      $data['exe'] = $this->exe;
-
-      $data['assetUrl'] = $this->exe->url->asset();
-
-      return $this->view->create("signup")->set($data)->render();
+      return $this->exe->redirect->to('@main.index');
 	}
 
-	public function logintemplate()
+	public function login()
 	{
 		$data = array();
 		$data['title'] = "Sign In";
@@ -91,7 +85,7 @@ class Main
 
 		$data['assetUrl'] = $this->exe->url->asset();
 
-		return $this->view->create('logintemplate')->set($data)->render();
+		return $this->view->create('login')->set($data)->render();
 
 	}
 

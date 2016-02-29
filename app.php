@@ -63,10 +63,6 @@ $myapp = $exedra->build("Apps", function($app)
               'uri' => '',
               'execute' => 'controller=Main@index'
               ),
-            'mainback'=>array(
-              'uri' => 'index',
-              'execute' => 'controller=Main@index'
-              ),
             'register' => array(
               'uri' => 'register',
               'execute' => 'controller=Main@register'
@@ -75,13 +71,9 @@ $myapp = $exedra->build("Apps", function($app)
               'uri' => 'signup',
               'execute' => 'controller=Main@signup'
               ),
-            'signupprocess' => array(
-              'uri' => 'signupprocess',
-              'execute' => 'controller=Main@signupprocess'
-              ),
             'login' => array(
               'uri' => 'login',
-              'execute' => 'controller=Main@logintemplate'
+              'execute' => 'controller=Main@login'
               ),
             'reset' => array(
               'uri' => 'reset',
