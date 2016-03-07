@@ -23,7 +23,7 @@
                         <div class="dropdown-header text-xs-center">
                             <strong>Settings</strong>
                         </div>
-                        <a class="dropdown-item" href="<?php echo $exe->url->create('default',['controller' => 'dashboard','action' => 'signout']);?>"><i class="fa fa-lock"></i> Logout</a>
+                        <a class="dropdown-item" href="<?php echo $exe->url->create('default',['controller' => 'dashboard','action' => 'signout']);?>"><i class="icon-logout"></i> Logout</a>
                     </div>
                 </li>
             </ul>
@@ -85,12 +85,21 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="nav-title">
+                        SETTING
+                    </li>
+                    <li class="nav-item nav-dropdown">
+                        <a class="nav-link nav-dropdown-toggle" href="#">ACCOUNT</a>
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo $exe->url->create('default',['controller' => 'dashboard','action' => 'signout']);?>"><i class="icon-logout"></i> Logout</a>
+                            </li>
+                        </ul>
+                    </li>
             
                 </ul>
             </div>
-            <div id="navigation-footer">
-            
-            </div>
+           
         </nav>
         <!-- Main content -->
         <main id="content">

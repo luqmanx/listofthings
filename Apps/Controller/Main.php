@@ -11,6 +11,14 @@ class Main
 		$this->view = $this->exe->view;
 
         $this->query = new \Apps\Model\QB($exe->config->get('db'));
+
+        // set default data
+        $this->view->setDefaultData(array(
+			'exe' => $exe,
+			'form' => $exe->form
+			));
+
+        $this->layout = $this->exe->view->create('layout/defaultmain');
         
 	}
 
@@ -23,7 +31,7 @@ class Main
 
         $data['assetUrl'] = $this->exe->url->asset();
 
-		return $this->view->create("index")->set($data)->render();
+		return $this->layout->set('view',$this->view->create('index')->set($data))->render();
 		
 		
 	}
@@ -52,6 +60,7 @@ class Main
 	    	$this->exe->flash->set('username' , $username);
 	    	$this->exe->flash->set('email', $email);
 	    	$this->exe->flash->set('password' , $this->exe->request->post('password'));
+	    	$this->exe->flash->set('password2' , $this->exe->request->post('password2'));
 
 			return $this->exe->redirect->to('@main.index');
         	
@@ -85,7 +94,7 @@ class Main
 
 		$data['assetUrl'] = $this->exe->url->asset();
 
-		return $this->view->create('login')->set($data)->render();
+		return $this->layout->set('view',$this->view->create('login')->set($data))->render();
 
 	}
 
@@ -128,8 +137,8 @@ class Main
 		$data['exe'] = $this->exe;
 
 		$data['assetUrl'] = $this->exe->url->asset();
-
-		return $this->view->create('forgot')->set($data)->render();
+		
+		return $this->layout->set('view',$this->view->create('forgot')->set($data))->render();
 	}
 
 	public function forgot_password()
@@ -146,9 +155,9 @@ class Main
 		$user = $getemail->getemail($data['email_forgot']);
 
 		if($user)
-		{
+		{	
 			$this->sendmail($user);
-			return $this->view->create('forgot_password')->set($data)->render();
+			return $this->layout->set('view',$this->view->create('forgot_password')->set($data))->render();
 		}
 
 		else
@@ -209,7 +218,17 @@ class Main
 
 		$data['user_id'] = $this->exe->request->get('uid');
 
-		return $this->view->create('reset')->set($data)->render();
+		$email = $this->query->load('User');
+		$useremail = $email->getuser($data['user_id']);
+
+		if($useremail)
+		{
+			$this->exe->session->set('user.useremail',$useremail->user_email);
+			return $this->layout->set('view',$this->view->create('reset')->set($data))->render();
+		}
+
+		$this->exe->session->destroy();
+
 	}
 
 	function reset_password()
@@ -229,7 +248,7 @@ class Main
 		$reset_password = $this->query->load('User');
 		$reset_password->reset_password($new);
 
-		return $this->view->create('reset_password')->set($data)->render();
+		return $this->layout->set('view',$this->view->create('reset_password')->set($data))->render();
 
 	}
 	
